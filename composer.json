@@ -1,0 +1,15 @@
+{
+    "name": "monster3d/adapter",
+    "description": "Simple base factory adapter only for MyTaxi Project",
+    "type": "library",
+    "require-dev": {
+        "phpunit/phpunit": "^6.1"
+    },
+    "authors": [
+        {
+            "name": "Monster3D",
+            "email": "monster3d@mail.ru"
+        }
+    ],
+    "require": {}
+}
