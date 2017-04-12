@@ -11,5 +11,7 @@
             "email": "monster3d@mail.ru"
         }
     ],
-    "require": {}
+    "require": {
+        "mashape/unirest-php": "^3.*"
+    }
 }
