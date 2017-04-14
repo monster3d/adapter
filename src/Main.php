@@ -16,6 +16,14 @@ require_once $path . 'CoreApiGateway.php';
 class Adapter {
 
     /**
+     * Настройки фабрики
+     *
+     * @var array
+     *
+     */
+    private static $settings;
+
+    /**
      *
      * Фабрика получение сервиса
      *
@@ -29,28 +37,29 @@ class Adapter {
     public static function get($service) {
         $service = strtolower($service);
 
-        /*
-         * Тут добовляется новый адаптер для удаленного сервиса
-         *
-         * class   = Класс сервиса
-         * host    = Хост сервиса
-         * auth    = Если есть ключ авторизации или null
-         * handler = Класс который будет обробатывать результаты или null
-         *
-         */
-        $adapters = [
-            'core'     => ['class' => 'CoreApiGateway', 'host' => CORE_URL, 'auth' => CORE_AUTH, 'handler' => 'GatewayResponse'],
-            'tracking' => ['class' => null, 'host' => '', 'handler' => null],
-            'routing'  => ['class' => null, 'host' => '', 'handler' => null]
-        ];
-
-        if (array_key_exists($service, $adapters)) {
-            $coreApi = $adapters[$service];
+        if (array_key_exists($service, static::$settings)) {
+            $settings = static::$settings[$service];
             /*
              * Правильно было бы отдавать хост в Драйвер, но по причине использования Unirest интерфеса это невозможно
              */
-            return new $coreApi['class'](new Driver(), $coreApi['host'], $coreApi['auth'],  new $coreApi['handler']());
+            $class   = $settings['class'];
+            $driver  = new Driver($settings['driver_settings']);
+            $host    = $settings['host'];
+            $auth    = $settings['auth'];
+            $handler = new $settings['handler']();
+
+            return new $class($driver, $host, $auth,  $handler);
         }
         throw new ServiceNotFoundException(sprintf("Сервис %s не найден", $service));
+    }
+
+    /**
+     *
+     * Устанавливает настройки
+     *
+     * @param $settings
+     */
+    public static function setSettings($settings) {
+        static::$settings = $settings;
     }
 }
