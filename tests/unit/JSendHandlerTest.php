@@ -1,11 +1,11 @@
 <?php
 
-class CoreHandlerTest extends \PHPUnit_Framework_TestCase {
+class JSendHandlerTest extends \PHPUnit_Framework_TestCase {
 
     private $gateway;
     /**
      *
-     * @var GatewayResponse
+     * @var JSendHandler
      *
      */
     private $handler;
@@ -24,7 +24,7 @@ class CoreHandlerTest extends \PHPUnit_Framework_TestCase {
      */
     protected function setUp()
     {
-        $this->handler  = new GatewayResponse();
+        $this->handler  = new JSendHandler();
         $this->stdObject = new stdClass();
         $gateway = $this->getMockBuilder(Gateway::class)
             ->setMethods(['setResponse', 'getResponse'])
@@ -68,7 +68,7 @@ class CoreHandlerTest extends \PHPUnit_Framework_TestCase {
         ];
 
         $stdObject->raw_body = json_encode($jSendData);
-        $handler->parse($stdObject, $this->gateway);
+        $handler->execute($stdObject, $this->gateway);
         $result = $gateway->getResponse();
         $this->assertInternalType('bool', $result['data']['object']);
         $this->assertEquals(true, $result['data']['object']);
@@ -90,7 +90,7 @@ class CoreHandlerTest extends \PHPUnit_Framework_TestCase {
             'data'   => ['message' => 'fail']
         ];
         $stdObject->raw_body = json_encode($jSendData);
-        $handler->parse($stdObject, $this->gateway);
+        $handler->execute($stdObject, $this->gateway);
     }
 
     /**
@@ -109,7 +109,7 @@ class CoreHandlerTest extends \PHPUnit_Framework_TestCase {
            'message' => 'error'
        ];
        $stdObject->raw_body = json_encode($jSendData);
-       $handler->parse($stdObject, $this->gateway);
+       $handler->execute($stdObject, $this->gateway);
     }
 
     /**
@@ -123,6 +123,6 @@ class CoreHandlerTest extends \PHPUnit_Framework_TestCase {
         $stdObject = $this->stdObject;
         $stdObject->code = 500;
         $stdObject->raw_body = null;
-        $handler->parse($stdObject, $this->gateway);
+        $handler->execute($stdObject, $this->gateway);
     }
 }

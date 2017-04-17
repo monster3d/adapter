@@ -1,6 +1,6 @@
 <?php
 
-interface GatewayContract {
+interface GatewayRequestContract {
 
     /**
      *
@@ -8,12 +8,11 @@ interface GatewayContract {
      *
      * @param $path string
      * @param $headers array
-     * @param $body null
      *
      * @return self
      *
      */
-    public function get($path, $headers = [], $body = null);
+    public function get($path, $headers = []);
 
     /**
      *
@@ -47,10 +46,9 @@ interface GatewayContract {
      *
      * @param $path string
      * @param $headers array
-     * @param $body null
      *
      * @return self
      *
      */
-    public function delete($path, $headers = [], $body = null);
+    public function delete($path, $headers = []);
 }

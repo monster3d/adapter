@@ -10,5 +10,25 @@ interface GatewayResponseContract {
      * @return mixed
      *
      */
-    public function execute($response);
+    public function handle($response);
+
+    /**
+     *
+     * Устанавливает результат
+     *
+     * @param $response mixed
+     *
+     * @return mixed
+     *
+     */
+    public function setResponse($response);
+
+    /**
+     *
+     * Получает результат от сервера
+     *
+     * @return mixed
+     *
+     */
+    public function getResponse();
 }

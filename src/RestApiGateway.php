@@ -7,7 +7,14 @@
  * @todo Нужно реализовать многократный вызов. Использовать промежуточный результат
  *
  */
-class CoreApiGateway extends Gateway implements GatewayContract, GatewayResponseContract {
+final class RestApiGateway extends Gateway implements GatewayRequestContract, GatewayResponseContract {
+
+    /**
+     *
+     * @var mixed результат работы сервиса
+     *
+     */
+    private $response;
 
     /**
      *
@@ -17,16 +24,16 @@ class CoreApiGateway extends Gateway implements GatewayContract, GatewayResponse
      *
      * @param $path string Путь запроса
      * @param $headers array Заголовки запроса
-     * @param $body mixed Тело запроса
      *
-     * @throws GatewayException (Ошибка валидации данных)
+     * @throws InvalidArgumentException (Ошибка валидации данных)
+     * @throws HttpGatewayException (Ошибка запроса)
      *
-     * @return CoreApiGateway
+     * @return RestApiGateway
      *
      */
-    public function get($path, $headers = [], $body = null)
+    public function get($path, $headers = [])
     {
-        $this->request(__METHOD__, $path, $headers, $body);
+        $this->response = $this->request(__METHOD__, $path, $headers, $body = null);
         return $this;
     }
 
@@ -38,17 +45,17 @@ class CoreApiGateway extends Gateway implements GatewayContract, GatewayResponse
      *
      * @param string $path Путь запроса
      * @param array $headers Заголовки запроса
-     * @param mixed $body тело запроса
+     * @param string|array $body тело запроса
      *
-     * @throws ValidationGatewayException (Ошибка валидации данных)
+     * @throws InvalidArgumentException (Ошибка валидации данных)
      * @throws HttpGatewayException (Ошибка запроса)
      *
-     * @return CoreApiGateway
+     * @return RestApiGateway
      *
      */
     public function post($path, $headers = [], $body = null)
     {
-        $this->request(__METHOD__, $path, $headers, $body);
+        $this->response = $this->request(__METHOD__, $path, $headers, $body);
         return $this;
     }
 
@@ -60,17 +67,17 @@ class CoreApiGateway extends Gateway implements GatewayContract, GatewayResponse
      *
      * @param string $path Путь запроса
      * @param array $headers Заголовки запроса
-     * @param mixed $body Тело запроса
+     * @param string|array $body Тело запроса
      *
-     * @throws ValidationGatewayException (Ошибка валидации данных)
+     * @throws InvalidArgumentException (Ошибка валидации данных)
      * @throws HttpGatewayException (Ошибка запроса)
      *
-     * @return CoreApiGateway
+     * @return RestApiGateway
      *
      */
     public function put($path, $headers = [], $body = null)
     {
-        $this->request(__METHOD__, $path, $headers, $body);
+        $this->response = $this->request(__METHOD__, $path, $headers, $body);
         return $this;
     }
 
@@ -82,17 +89,16 @@ class CoreApiGateway extends Gateway implements GatewayContract, GatewayResponse
      *
      * @param string $path Путь запроса
      * @param array $headers Заголовки запроса
-     * @param mixed $body Тело запроса
      *
-     * @throws ValidationGatewayException (Ошибка валидации данных)
+     * @throws InvalidArgumentException (Ошибка валидации данных)
      * @throws HttpGatewayException (Ошибка запроса)
      *
-     * @return CoreApiGateway
+     * @return RestApiGateway
      *
      */
-    public function delete($path, $headers = [], $body = null)
+    public function delete($path, $headers = [])
     {
-        $this->request(__METHOD__, $path, $headers, $body);
+        $this->response = $this->request(__METHOD__, $path, $headers, $body = null);
         return $this;
     }
 
@@ -109,8 +115,37 @@ class CoreApiGateway extends Gateway implements GatewayContract, GatewayResponse
      * @return mixed
      *
      */
-    public function execute($response)
+    public function handle($response)
     {
-       return $this->handler->parse($response, $this);
+       return $this->handler->execute($response, $this);
+    }
+    /**
+     *
+     * Отдает ответ от сервера
+     *
+     * @return mixed
+     *
+     */
+    public function getResponse()
+    {
+        if (!is_null($this->handler)) {
+            $this->handle($this->response);
+        }
+        return $this->response;
+    }
+
+    /**
+     *
+     * Устанавливает ответ от сервиса
+     *
+     * @param $response mixed
+     *
+     * @return Gateway
+     *
+     */
+    public function setResponse($response)
+    {
+        $this->response = $response;
+        return $this;
     }
 }

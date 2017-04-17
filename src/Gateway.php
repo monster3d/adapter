@@ -4,59 +4,50 @@ abstract class Gateway {
 
     /**
      *
-     * Выполняет запросы, реализуя HTTP методы
-     *
-     * @var Driver
+     * @var Driver выполняет запросы, реализуя HTTP методы
      *
      */
     private $driver;
 
     /**
      *
-     * Обработчик реазультат от сервиса
-     *
-     * @var GatewayResponse
+     * @var GatewayHandlerContract обробатывает результаты запроса
      *
      */
     protected $handler;
 
     /**
      *
-     * Указывает на какой сервис пойдут запросы
-     *
-     * @var string
+     * @var string url сервиса
      *
      */
     private $host;
 
     /**
      *
-     * Токен для авторизации
-     *
-     * @var string
+     * @var string токен авторизации
      *
      */
     private $auth;
 
     /**
      *
-     * Ответ от сервиса
-     *
-     * @var mixed
+     * @var mixed ответ от сервиса
      *
      */
     private $response;
 
     /**
      *
-     * Gateway constructor.
-     * @param $driver Driver
-     * @param $host String
-     * @param $auth String
-     * @param $responseHandel Object
+     * Gateway constructor
+     *
+     * @param $driver Driver Http драйвер
+     * @param $host String хост сервиса
+     * @param $auth String|null токен авторизации
+     * @param $responseHandel Object|null обработчик результата запроса
      *
      */
-    public function __construct(Driver $driver, $host, $auth = null, $responseHandel = null)
+    public function __construct($driver, $host, $auth = null, $responseHandel = null)
     {
         $this->driver  = $driver;
         $this->handler = $responseHandel;
@@ -68,15 +59,15 @@ abstract class Gateway {
      *
      * Устанавливает url сервиса
      *
-     * @param $host String
+     * @param $host String хост
      *
-     * @throws ValidationGatewayException
+     * @throws InvalidArgumentException
      *
      */
     private function setHost($host)
     {
         if (!(bool)filter_var($host, FILTER_VALIDATE_URL)) {
-            throw new ValidationGatewayException(sprintf("Invalid url: %s", $host));
+            throw new InvalidArgumentException(sprintf("Invalid url: %s", $host));
         }
         $this->host = $host;
     }
@@ -85,17 +76,15 @@ abstract class Gateway {
      *
      * Выполняет запрос
      *
-     * @param $method string
-     * @param $path string
-     * @param $header array
-     * @param $body mixed
+     * @param $method string название Http метода
+     * @param $path string путь запроса
+     * @param $header array заголовки запроса
+     * @param $body string|array тело запроса
      *
-     * @throws Exception Исключения Unirest
-     * @throws ValidationGatewayException Ошибка валидации метода запроса
+     * @throws HttpGatewayException Ошибка запроса
+     * @throws InvalidArgumentException Ошибка валидации метода запроса
      *
-     * @see HttpGatewayException (Ошибка запроса)
-     *
-     * @return void
+     * @return mixed
      *
      */
     public function request($method, $path, $header, $body)
@@ -103,20 +92,6 @@ abstract class Gateway {
         $response = null;
         $this->methodValidation($method);
         $requestMethod = strtoupper(explode('::', $method)[1]);
-
-        if (defined('PHPUNIT_TESTSUITE')) {
-            $stub = [
-                'status' => 'success',
-                'data'   => ['objects' => ['boolean' => true, 'int' => 1]]
-            ];
-
-            $response = (object) [
-                'code'     => 200,
-                'raw_body' => json_encode($stub)
-            ];
-            $this->response = $response;
-            return;
-        }
 
         if (!is_null($this->auth)) {
             $header = array_merge($header, ['Authorization' => $this->auth]);
@@ -130,56 +105,22 @@ abstract class Gateway {
             throw new HttpGatewayException(sprintf("Ошибка при выполнение запроса на URL: %s \r\n Методом: %s \r\n Тело: %s",
                 $url, $requestMethod, print_r($body, true)));
         }
-        $this->response = $response;
-    }
-
-    /**
-     *
-     * Отдает ответ от сервера
-     *
-     *
-     *
-     * @return mixed
-     *
-     */
-    public function getResponse()
-    {
-        if (!is_null($this->handler)) {
-            $this->execute($this->response);
-        }
-        return $this->response;
-    }
-
-    /**
-     *
-     * Устанавливает ответ от сервиса
-     *
-     * @param $response mixed
-     *
-     * @return Gateway
-     *
-     * @throws
-     *
-     */
-    public function setResponse($response)
-    {
-        $this->response = $response;
-        return $this;
+        return $response;
     }
 
     /**
      *
      * Проводит валидацию метода запроса
      *
-     * @param $method
+     * @param $method string
      *
-     * @throws ValidationGatewayException Ошибка валидации метода
+     * @throws InvalidArgumentException Ошибка валидации метода
      *
      */
     private function methodValidation($method)
     {
         if (!preg_match("/^[A-Za-z]+::[A-Za-z]+$/", $method)) {
-            throw new ValidationGatewayException(sprintf('Method: %s not support', $method));
+            throw new InvalidArgumentException(sprintf('Method: %s not support', $method));
         }
     }
 

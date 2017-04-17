@@ -6,11 +6,12 @@ require_once APP_ABSPATH . 'vendor/autoload.php';
 require_once APP_ABSPATH . 'libs/ErrorMessagingTrait.php';
 require_once $path . 'GatewayException.php';
 require_once $path . 'GatewayResponseContract.php';
-require_once $path . 'GatewayContract.php';
+require_once $path . 'GatewayHandlerContract.php';
+require_once $path . 'GatewayRequestContract.php';
 require_once $path . 'Gateway.php';
 require_once $path . 'Driver.php';
-require_once $path . 'GatewayResponse.php';
-require_once $path . 'CoreApiGateway.php';
+require_once $path . 'JSendHandler.php';
+require_once $path . 'RestApiGateway.php';
 
 
 class Adapter {

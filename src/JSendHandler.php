@@ -1,6 +1,6 @@
 <?php
 
-class GatewayResponse {
+class JSendHandler implements GatewayHandlerContract {
 
     use ErrorMessagingTrait;
 
@@ -8,8 +8,8 @@ class GatewayResponse {
      *
      * Функция будет вызвана если получен результат от сервиса
      *
-     * @param $name
-     * @param $response
+     * @param $response mixed результат ответа
+     * @param $gateway RestApiGateway
      *
      * @throws HttpGatewayException Ошибка запроса к сервису
      * @throws ValidationGatewayException Ошибка валидации JSON Результата
@@ -21,17 +21,16 @@ class GatewayResponse {
      *
      * @throws GatewayException Неизвестная ошибка
      *
-     * @return void
+     * @return RestApiGateway
      *
      */
-    public function __call($name, $response)
+    public function execute($response, $gateway)
     {
         $error = null;
         $data  = null;
         $notHttpErrorCode = [200, 400];
-        $gateway = $response[1];
-        $code    = $response[0]->code;
-        $body    = $response[0]->raw_body;
+        $code    = $response->code;
+        $body    = $response->raw_body;
 
         if (!in_array($code, $notHttpErrorCode)) {
             $error = new HttpGatewayException(sprintf("Сервис вернул ошибку \n\r Код: %s \n\r Тело: %s", $code, $body));
@@ -63,6 +62,7 @@ class GatewayResponse {
             throw $error;
         }
         $gateway->setResponse($data);
+        return $gateway;
     }
 }
 
