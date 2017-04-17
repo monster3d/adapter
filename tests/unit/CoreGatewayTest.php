@@ -33,7 +33,7 @@ class CoreGateWayTest extends \PHPUnit_Framework_TestCase
      * Тестирует метода на валидный результат
      *
      */
-    public function testSetHostValid()
+    public function testCanGiveValidHostName()
     {
         $host = "http://test.loc";
         new CoreApiGateway($this->driver, $host);
@@ -41,10 +41,10 @@ class CoreGateWayTest extends \PHPUnit_Framework_TestCase
 
     /**
      *
-     * @expectedException GateWayException
+     * @expectedException ValidationGatewayException
      *
      */
-    public function testHostInvalid()
+    public function testCanGiveInvalidHostName()
     {
         $host = "test.loc";
         new CoreApiGateWay($this->driver, $host);
@@ -55,12 +55,12 @@ class CoreGateWayTest extends \PHPUnit_Framework_TestCase
      * Тестирует GET запрос
      *
      */
-    public function testGetRequest()
+    public function testCanSendGetRequest()
     {
         $coreApiGateway = new CoreApiGateway($this->driver, 'http://test.loc');
         $coreApiGateway->get('/test', ['header' => 'value'], json_encode(['key' => 'value']));
         $result = $coreApiGateway->getResponse();
-        $this->assertInstanceOf(Unirest\Response::class, $result);
+        $this->assertInstanceOf(stdClass::class, $result);
     }
 
     /**
@@ -68,12 +68,12 @@ class CoreGateWayTest extends \PHPUnit_Framework_TestCase
      * Тестирует POST запрос
      *
      */
-    public function testPostRequest()
+    public function testCanSendPostRequest()
     {
         $coreApiGateway = new CoreApiGateway($this->driver, 'http://test.loc');
         $coreApiGateway->post('/test', ['header' => 'value'], json_encode(['key' => 'value']));
         $result = $coreApiGateway->getResponse();
-        $this->assertInstanceOf(Unirest\Response::class, $result);
+        $this->assertInstanceOf(stdClass::class, $result);
     }
 
     /**
@@ -81,12 +81,12 @@ class CoreGateWayTest extends \PHPUnit_Framework_TestCase
      * Тестирует PUT запрос
      *
      */
-    public function testPutRequest()
+    public function testCanSendPutRequest()
     {
         $coreApiGateway = new CoreApiGateway($this->driver, 'http://test.loc');
         $coreApiGateway->put('/test', ['header' => 'value'], json_encode(['key' => 'value']));
         $result = $coreApiGateway->getResponse();
-        $this->assertInstanceOf(Unirest\Response::class, $result);
+        $this->assertInstanceOf(stdClass::class, $result);
     }
 
     /**
@@ -94,11 +94,11 @@ class CoreGateWayTest extends \PHPUnit_Framework_TestCase
      * Тестирует DELETE запрос
      *
      */
-    public function testDeleteRequest()
+    public function testCanSendDeleteRequest()
     {
         $coreApiGateway = new CoreApiGateway($this->driver, 'http://test.loc');
         $coreApiGateway->delete('/test', ['header' => 'value'], json_encode(['key' => 'value']));
         $result = $coreApiGateway->getResponse();
-        $this->assertInstanceOf(Unirest\Response::class, $result);
+        $this->assertInstanceOf(stdClass::class, $result);
     }
 }

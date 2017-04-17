@@ -54,17 +54,12 @@ class CoreHandlerTest extends \PHPUnit_Framework_TestCase {
         $this->gateway   = null;
     }
 
-    /**
-     *
-     * Тестирует обработку ответа Success
-     *
-     *
-     */
-    public function testCoreHandlerSuccess()
+    public function testCanAcceptCoreHandlerResultSuccess()
     {
         $result    = null;
         $handler   = $this->handler;
         $stdObject = $this->stdObject;
+        $gateway   = $this->gateway;
 
         $stdObject->code = 200;
         $jSendData = [
@@ -73,8 +68,7 @@ class CoreHandlerTest extends \PHPUnit_Framework_TestCase {
         ];
 
         $stdObject->raw_body = json_encode($jSendData);
-        $gateway = $handler->parse($stdObject, $this->gateway);
-        $this->assertInstanceOf(Gateway::class, $gateway);
+        $handler->parse($stdObject, $this->gateway);
         $result = $gateway->getResponse();
         $this->assertInternalType('bool', $result['data']['object']);
         $this->assertEquals(true, $result['data']['object']);
@@ -82,12 +76,10 @@ class CoreHandlerTest extends \PHPUnit_Framework_TestCase {
 
     /**
      *
-     * Тестирует обработу ответа Fail
-     *
      * @expectedException FailGatewayException
      *
      */
-    public function testCoreHandlerFail()
+    public function testCanAcceptCoreHandlerResultFail()
     {
         $handler   = $this->handler;
         $stdObject = $this->stdObject;
@@ -106,7 +98,7 @@ class CoreHandlerTest extends \PHPUnit_Framework_TestCase {
      * @expectedException ErrorGatewayException
      *
      */
-    public function testCoreHandlerError()
+    public function testCanAcceptCoreHandlerResultError()
     {
        $handler   = $this->handler;
        $stdObject = $this->stdObject;
@@ -122,59 +114,10 @@ class CoreHandlerTest extends \PHPUnit_Framework_TestCase {
 
     /**
      *
-     * Тестирует обработу ответа Fail без исключения
-     *
-     */
-    public function testCoreHandlerFailWithoutException()
-    {
-        $result    = null;
-        $handler   = $this->handler;
-        $stdObject = $this->stdObject;
-        $handler->exception(false);
-        $stdObject->code = 200;
-        $jSendData = [
-            'status' => 'fail',
-            'data'   => ['message' => 'fail']
-        ];
-        $stdObject->raw_body = json_encode($jSendData);
-        $gateway = $handler->parse($stdObject, $this->gateway);
-        $this->assertInstanceOf(Gateway::class, $gateway);
-        $result = $gateway->getResponse();
-        $this->assertInternalType('bool', $result['data']['object']);
-        $this->assertEquals(true, $result['data']['object']);
-    }
-
-    /**
-     *
-     * Тестирует обработу ответа Error без исключения
-     *
-     */
-    public function testCoreHandlerErrorWithoutException()
-    {
-       $result    = null;
-       $handler   = $this->handler;
-       $stdObject = $this->stdObject;
-        $handler->exception(false);
-       $stdObject->code = 200;
-       $jSendData = [
-           'status'  => 'error',
-           'message' => 'error'
-       ];
-       $stdObject->raw_body = json_encode($jSendData);
-       $gateway = $handler->parse($stdObject, $this->gateway);
-       $result = $gateway->getResponse();
-       $this->assertInternalType('bool', $result['data']['object']);
-       $this->assertEquals(true, $result['data']['object']);
-    }
-
-    /**
-     *
-     * Тестирует ошибку Http
-     *
      * @expectedException HttpGatewayException
      *
      */
-    public function testHttpError()
+    public function testCatAcceptResponseHttpCodeNot200()
     {
         $handler   = $this->handler;
         $stdObject = $this->stdObject;
