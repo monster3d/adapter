@@ -4,27 +4,22 @@
 /**
  * Class CoreApiGateway
  *
- * @todo Нужно реализовать много кратный вызов. Использовать промежуточный результат
+ * @todo Нужно реализовать многократный вызов. Использовать промежуточный результат
  *
  */
 class CoreApiGateway extends Gateway implements GatewayContract, GatewayResponseContract {
 
     /**
      *
-     * @var Unirest\Response
+     * Отпровляет GET запрос
      *
-     */
-    private $response;
-
-    /**
-     *
-     * @see GatewayContract
+     * @see CoreApiGateway::request() Механизм обработки запроса
      *
      * @param $path string Путь запроса
      * @param $headers array Заголовки запроса
      * @param $body mixed Тело запроса
      *
-     * @throws GatewayException
+     * @throws GatewayException (Ошибка валидации данных)
      *
      * @return CoreApiGateway
      *
@@ -37,13 +32,16 @@ class CoreApiGateway extends Gateway implements GatewayContract, GatewayResponse
 
     /**
      *
-     * @see GatewayContract
+     * Отпровляет POST запрос
+     *
+     * @see CoreApiGateway::request() Механизм обработки запроса
      *
      * @param string $path Путь запроса
      * @param array $headers Заголовки запроса
      * @param mixed $body тело запроса
      *
-     * @throws GatewayException
+     * @throws ValidationGatewayException (Ошибка валидации данных)
+     * @throws HttpGatewayException (Ошибка запроса)
      *
      * @return CoreApiGateway
      *
@@ -56,13 +54,16 @@ class CoreApiGateway extends Gateway implements GatewayContract, GatewayResponse
 
     /**
      *
-     * @see GatewayContract
+     * Отпровляет PUT запрос
+     *
+     * @see CoreApiGateway::request() Механизм обработки запроса
      *
      * @param string $path Путь запроса
      * @param array $headers Заголовки запроса
      * @param mixed $body Тело запроса
      *
-     * @throws GatewayException
+     * @throws ValidationGatewayException (Ошибка валидации данных)
+     * @throws HttpGatewayException (Ошибка запроса)
      *
      * @return CoreApiGateway
      *
@@ -75,13 +76,16 @@ class CoreApiGateway extends Gateway implements GatewayContract, GatewayResponse
 
     /**
      *
-     * @see GateWayContract
+     * Отпровляет DELETE запрос
+     *
+     * @see CoreApiGateway::request() Механизм обработки запроса
      *
      * @param string $path Путь запроса
      * @param array $headers Заголовки запроса
      * @param mixed $body Тело запроса
      *
-     * @throws GatewayException
+     * @throws ValidationGatewayException (Ошибка валидации данных)
+     * @throws HttpGatewayException (Ошибка запроса)
      *
      * @return CoreApiGateway
      *
@@ -94,43 +98,18 @@ class CoreApiGateway extends Gateway implements GatewayContract, GatewayResponse
 
     /**
      *
-     * Получить результат запроса
-     *
-     * @return \Unirest\Response
-     *
-     */
-    public function getResponse()
-    {
-        return $this->response;
-    }
-
-    /**
-     *
-     * Устанавливает результат ответа от сервиса
-     *
-     * @param $response
-     *
-     * @return CoreApiGateway
-     *
-     */
-    public function setResponse($response)
-    {
-        $this->response = $response;
-        return $this;
-    }
-
-    /**
-     *
-     * @see GatewayResponseContract
+     * Применяет оброботчки к результату запроса
      *
      * @param mixed $response
      *
      * @throws GatewayException
      *
+     * @see GatewayResponse Возможные исключения от хендлера
+     *
      * @return mixed
      *
      */
-    public function responseHandler($response)
+    public function execute($response)
     {
        return $this->handler->parse($response, $this);
     }
