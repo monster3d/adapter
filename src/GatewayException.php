@@ -19,3 +19,7 @@ class FailGatewayException extends GatewayException {
 class ErrorGatewayException extends GatewayException {
     //pass
 }
+
+class ValidationGatewayException extends GatewayException {
+    //pass
+}
