@@ -38,15 +38,16 @@ class Adapter {
         $service = strtolower($service);
 
         if (array_key_exists($service, static::$settings)) {
-            $settings = static::$settings[$service];
+            $baseSettings  = static::$settings[$service];
+            $driverSettings = $baseSettings['driver_settings'];
             /*
              * Правильно было бы отдавать хост в Драйвер, но по причине использования Unirest интерфеса это невозможно
              */
-            $class   = $settings['class'];
-            $driver  = new Driver($settings['driver_settings']);
-            $host    = $settings['host'];
-            $auth    = $settings['auth'];
-            $handler = new $settings['handler']();
+            $class   = $baseSettings['class'];
+            $driver  = new Driver($driverSettings['verify_host'], $driverSettings['verify_peer'], $driverSettings['timeout']);
+            $host    = $baseSettings['host'];
+            $auth    = $baseSettings['auth'];
+            $handler = new $baseSettings['handler']();
 
             return new $class($driver, $host, $auth,  $handler);
         }
