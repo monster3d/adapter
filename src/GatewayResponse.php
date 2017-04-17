@@ -6,33 +6,22 @@ class GatewayResponse {
 
     /**
      *
-     * Указывает нужно ли вернуть исключение при ошибки
-     *
-     * @var boolean
-     *
-     */
-    private $exception;
-
-    /**
-     *
-     * GatewayResponse constructor.
-     *
-     */
-    public function __construct()
-    {
-        $this->exception = true;
-    }
-
-    /**
-     *
      * Функция будет вызвана если получен результат от сервиса
      *
      * @param $name
      * @param $response
      *
-     * @return Gateway
+     * @throws HttpGatewayException Ошибка запроса к сервису
+     * @throws ValidationGatewayException Ошибка валидации JSON Результата
      *
-     * @throws GatewayException
+     * @throws FailGatewayException Ошибка данных (JSend)
+     * @throws ErrorGatewayException Сервис вернул ошибку (JSend)
+     *
+     * @see https://labs.omniti.com/labs/jsend
+     *
+     * @throws GatewayException Неизвестная ошибка
+     *
+     * @return void
      *
      */
     public function __call($name, $response)
@@ -49,18 +38,18 @@ class GatewayResponse {
             $this->writeErrorLog($error);
             throw $error;
         }
-
-        $response = \JSend\JSendResponse::decode($body);
-
+        try {
+            $response = \JSend\JSendResponse::decode($body);
+        } catch (\JSend\InvalidJSendException $e) {
+            throw new ValidationGatewayException(sprintf("Не валидный JSON Тело: %s", print_r($body, true)));
+        }
         switch (true) {
             case $response->isFail():
                 $data = $response->getData();
-                $gateway->setResponse($data);
                 $error = new FailGatewayException(sprintf("Ошибка данных \n\r Тело: %s", print_r($data, true)));
                 break;
             case $response->isError():
                 $data = $response->getErrorMessage();
-                $gateway->setResponse($data);
                 $error = new ErrorGatewayException(sprintf("Ошибка сервиса \n\r Тело: %s", $data));
                 break;
             case $response->isSuccess():
@@ -69,24 +58,11 @@ class GatewayResponse {
             default:
                 $error = new GatewayException("Неизвестная ошибка сервиса");
         }
-        if (!is_null($error) && $this->exception) {
+        if (!is_null($error)) {
             $this->writeErrorLog($error);
             throw $error;
         }
         $gateway->setResponse($data);
-        return $gateway;
-    }
-
-    /**
-     *
-     * Отключить или включить выброс исключений
-     *
-     * @param $switch bool
-     *
-     */
-    public function exception($switch)
-    {
-        $this->exception = (bool)$switch;
     }
 }
 
