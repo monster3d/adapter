@@ -53,13 +53,4 @@ interface GatewayContract {
      *
      */
     public function delete($path, $headers = [], $body = null);
-
-    /**
-     *
-     * Получить результат запроса
-     *
-     * @return Unirest\Response|array
-     *
-     */
-    public function getResponse();
 }
