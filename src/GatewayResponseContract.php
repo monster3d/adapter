@@ -10,5 +10,5 @@ interface GatewayResponseContract {
      * @return mixed
      *
      */
-    public function responseHandler($response);
+    public function execute($response);
 }
