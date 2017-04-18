@@ -6,8 +6,8 @@ interface GatewayRequestContract {
      *
      * Выполняет GET запрос
      *
-     * @param $path string
-     * @param $headers array
+     * @param string $path
+     * @param array $headers
      *
      * @return self
      *
@@ -18,9 +18,9 @@ interface GatewayRequestContract {
      *
      * Выполнет POST запрос
      *
-     * @param $path string
-     * @param $headers array
-     * @param $body null
+     * @param string $path
+     * @param array $headers
+     * @param string|array|null $body
      *
      * @return self
      *
@@ -31,9 +31,9 @@ interface GatewayRequestContract {
      *
      * Выполняет PUT запрос
      *
-     * @param $path string
-     * @param $headers array
-     * @param $body null
+     * @param string $path
+     * @param array $headers
+     * @param string|array|null $body
      *
      * @return self
      *
@@ -44,8 +44,8 @@ interface GatewayRequestContract {
      *
      * Выполняет DELETE запрос
      *
-     * @param $path string
-     * @param $headers array
+     * @param string $path
+     * @param array $headers
      *
      * @return self
      *

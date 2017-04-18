@@ -8,8 +8,8 @@ class JSendHandler implements GatewayHandlerContract {
      *
      * Функция будет вызвана если получен результат от сервиса
      *
-     * @param $response mixed результат ответа
-     * @param $gateway RestApiGateway
+     * @param mixed $response результат ответа
+     * @param RestApiGateway $gateway
      *
      * @throws HttpGatewayException Ошибка запроса к сервису
      * @throws ValidationGatewayException Ошибка валидации JSON Результата

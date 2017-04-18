@@ -6,8 +6,8 @@ interface GatewayHandlerContract {
      *
      * Выполняется по принципу obServer
      *
-     * @param $response mixed
-     * @param $gateway RestApiGateway
+     * @param mixed $response
+     * @param RestApiGateway $gateway
      *
      * @return mixed
      *

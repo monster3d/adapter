@@ -22,8 +22,8 @@ final class RestApiGateway extends Gateway implements GatewayRequestContract, Ga
      *
      * @see CoreApiGateway::request() Механизм обработки запроса
      *
-     * @param $path string Путь запроса
-     * @param $headers array Заголовки запроса
+     * @param string $path Путь запроса
+     * @param array $headers Заголовки запроса
      *
      * @throws InvalidArgumentException (Ошибка валидации данных)
      * @throws HttpGatewayException (Ошибка запроса)
@@ -138,7 +138,7 @@ final class RestApiGateway extends Gateway implements GatewayRequestContract, Ga
      *
      * Устанавливает ответ от сервиса
      *
-     * @param $response mixed
+     * @param mixed $response
      *
      * @return Gateway
      *

@@ -32,25 +32,18 @@ abstract class Gateway {
 
     /**
      *
-     * @var mixed ответ от сервиса
-     *
-     */
-    private $response;
-
-    /**
-     *
      * Gateway constructor
      *
-     * @param $driver Driver Http драйвер
-     * @param $host String хост сервиса
-     * @param $auth String|null токен авторизации
-     * @param $responseHandel Object|null обработчик результата запроса
+     * @param Driver $driver Http драйвер
+     * @param string $host хост сервиса
+     * @param string $auth токен авторизации
+     * @param Object|null $responseHandler обработчик результата запроса
      *
      */
-    public function __construct($driver, $host, $auth = null, $responseHandel = null)
+    public function __construct($driver, $host, $auth = null, $responseHandler = null)
     {
         $this->driver  = $driver;
-        $this->handler = $responseHandel;
+        $this->handler = $responseHandler;
         $this->auth    = $auth;
         $this->setHost($host);
     }
@@ -59,7 +52,7 @@ abstract class Gateway {
      *
      * Устанавливает url сервиса
      *
-     * @param $host String хост
+     * @param string $host хост
      *
      * @throws InvalidArgumentException
      *
@@ -76,10 +69,10 @@ abstract class Gateway {
      *
      * Выполняет запрос
      *
-     * @param $method string название Http метода
-     * @param $path string путь запроса
-     * @param $header array заголовки запроса
-     * @param $body string|array тело запроса
+     * @param string $method название Http метода
+     * @param string $path путь запроса
+     * @param array $header заголовки запроса
+     * @param string|array $body тело запроса
      *
      * @throws HttpGatewayException Ошибка запроса
      * @throws InvalidArgumentException Ошибка валидации метода запроса
@@ -112,7 +105,7 @@ abstract class Gateway {
      *
      * Проводит валидацию метода запроса
      *
-     * @param $method string
+     * @param string $method
      *
      * @throws InvalidArgumentException Ошибка валидации метода
      *

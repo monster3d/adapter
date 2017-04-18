@@ -6,7 +6,7 @@ interface GatewayResponseContract {
      *
      * Обработчик ответа
      *
-     * @param $response
+     * @param mixed $response
      * @return mixed
      *
      */
@@ -16,7 +16,7 @@ interface GatewayResponseContract {
      *
      * Устанавливает результат
      *
-     * @param $response mixed
+     * @param mixed $response
      *
      * @return mixed
      *

@@ -14,7 +14,7 @@ require_once $path . 'JSendHandler.php';
 require_once $path . 'RestApiGateway.php';
 
 
-class Adapter {
+class Factory {
 
     /**
      * Настройки фабрики
@@ -28,9 +28,9 @@ class Adapter {
      *
      * Фабрика получение сервиса
      *
-     * @param $service string
+     * @param string $service
      *
-     * @return GatewayContract
+     * @return RestApiGateway
      *
      * @throws ServiceNotFoundException
      *
@@ -44,7 +44,7 @@ class Adapter {
             /*
              * Правильно было бы отдавать хост в Драйвер, но по причине использования Unirest интерфеса это невозможно
              */
-            $class   = $baseSettings['class'];
+            $class   = $baseSettings['type'];
             $driver  = new Driver($driverSettings['verify_host'], $driverSettings['verify_peer'], $driverSettings['timeout']);
             $host    = $baseSettings['host'];
             $auth    = $baseSettings['auth'];
